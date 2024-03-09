@@ -1,0 +1,15 @@
+*.pyc
+*.pyo
+*.db
+.cache
+.git/
+__pycache__
+dist
+.next
+docs
+logs
+stats
+Dockerfile
+__localcode/
+node_modules
+.env.test

@@ -1,0 +1,67 @@
+version: "3.9"
+
+services:
+  web:
+    container_name: web
+    image: web
+    build:
+      context: ./web
+    restart: always
+    volumes:
+      - ./web:/app
+      - /web/app/node_modules
+    env_file:
+      - ./web/.env.local
+    ports:
+      - 3000:3000
+    networks:
+      - standard_network
+
+  api_nest:
+    container_name: api_nest
+    image: api-nest
+    build:
+      context: ./api-nest
+    restart: always
+    ports:
+      - 8000:8000
+    volumes:
+      - ./api-nest:/src
+      - /api-nest/app/node_modules
+    env_file:
+      - ./api-nest/.env
+    depends_on:
+      - database
+    networks:
+      - standard_network
+
+  database:
+    container_name: database
+    image: postgres:latest
+    ports:
+      - 5432:5432
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data/
+    env_file:
+      - ./api-nest/.env
+    networks:
+      - standard_network
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    restart: always
+    ports:
+      - 5050:80
+    env_file:
+      - ./api-nest/.env
+    depends_on:
+      - database
+    volumes:
+      - ./data/pgadmin:/var/lib/pgadmin
+    networks:
+      - standard_network
+
+networks:
+  standard_network:
+    driver: bridge
